@@ -1,0 +1,326 @@
+// Implementation of Singly Linked List
+#include "iostream.h"
+#include "conio.h"
+class NODE
+{
+	public:
+		int data;
+		NODE *link;
+};
+class LIST
+{
+		//  data
+		NODE *start;
+	public:
+		// operations
+		LIST();
+		void ADD_FIRST(int); 	// 1
+		void ADD_LAST(int); 	// 2
+		void ADD_POS(int,int); 	// 3
+		int DEL_FIRST(); 		// 4
+		int DEL_LAST(); 		// 5
+		int DEL_POS(int); 		// 6
+		void VIEW(); 			// 7
+		int IS_EMPTY();
+};
+/////////////////////////////////////////////////////////////////
+LIST::LIST()
+{
+	// def of function
+	start = NULL;
+}
+/////////////////////////////////////////////////////////////////
+void LIST::ADD_FIRST(int ele)
+{
+	// def of function
+	//case - I Check List is full?
+	//----- (A) create new node --------------
+	NODE *NN;
+	NN= new NODE(); // allocate new node
+	if(NN == NULL)
+	{
+		cout<<endl<<"List is full";
+		return;
+	}
+	//----- (B) fill up new node -------------
+	NN->data = ele;
+	NN->link = NULL;
+	//---- (C) set the links -----------------
+	if(start==NULL) //case - II Not Full - Empty
+		start=NN;
+	else //case - III Not Full - Not Empty
+	{
+		NN->link = start;//sets null in case of list initially empty
+		start = NN;
+	}
+}
+/////////////////////////////////////////////////////////////////
+void LIST::ADD_LAST(int ele)
+{
+	// def of function
+	//case - I  List is full
+	//----- (A) create new node --------------
+	NODE *NN;
+	NN= new NODE(); // allocate new node
+	/*if(NN == NULL) // optional
+	{
+		cout<<endl<<"List is full";
+		return;
+	}*/
+	//----- (B) fill up new node -------------
+	NN->data = ele;
+	NN->link = NULL;
+	//---- (C) set the links -----------------
+	if(start == NULL)
+		start=NN;
+	else
+	{
+		NODE *ptr;
+		ptr= start;
+		while(ptr->link != NULL)
+		{
+			ptr= ptr->link;
+		}
+		ptr->link = NN;
+	}
+}
+/////////////////////////////////////////////////////////////////
+void LIST::ADD_POS(int ele,int pos)
+{
+	// def of function
+	//case - I  List is full
+	//----- (A) create new node --------------
+	NODE *NN;
+	NN= new NODE(); // allocate new node
+	/*if(NN == NULL) // optional
+	{
+		cout<<endl<<"List is full";
+		return;
+	}*/
+	//----- (B) fill up new node -------------
+	NN->data = ele;
+	NN->link = NULL;
+	//---- (C) set the links -----------------
+	if(pos == 1)
+	{
+		NN->link = start;
+		start = NN;
+	}
+	else
+	{
+		int count = 1;
+		// ---- using one pointer variable ----
+		/*
+		NODE *ptr=start;
+		while(count < pos-1)
+		{
+			ptr = ptr->link;
+			count = count + 1;
+		}
+		NN->link = ptr->link;
+		ptr->link = NN;
+		*/
+		// ---- using pair of pointer variables ----
+		NODE *ptr = start;
+		NODE *prev = NULL;
+		while(count < pos)
+		{
+			prev = ptr;
+			ptr = ptr->link;
+			count = count + 1;
+		}
+		NN->link = ptr;
+		prev->link = NN;
+	}
+}
+/////////////////////////////////////////////////////////////////
+int LIST::DEL_FIRST()
+{
+	// def of function
+	if(start == NULL)
+	{
+		cout<<endl<<"List is empty";
+		return NULL;
+	}
+	int ele = start->data;
+	NODE * TEMP = start;
+	start = start->link;
+	delete TEMP;
+	return ele;
+}
+/////////////////////////////////////////////////////////////////
+int LIST::DEL_LAST()
+{
+	// def of function
+	if(start == NULL)
+	{
+		cout<<endl<<"List is empty";
+		return NULL;
+	}
+	// use pair of pointers
+	NODE *ptr = start;
+	NODE *prev = NULL;
+	while(ptr->link != NULL) //move the ptrs up to last node
+	{
+		prev = ptr;
+		ptr = ptr ->link;
+	}
+	int ele = ptr->data;
+	NODE *TEMP = ptr;
+	if (prev ==NULL) // only one ele in list
+		start =NULL;
+	else
+		prev->link = NULL; // set the link
+
+	delete TEMP;
+	return ele;
+}
+int LIST::DEL_POS(int pos)
+{
+	// def of function
+	NODE *TEMP;
+	int ele;
+	if(start == NULL)
+	{
+		cout<<endl<<"List is empty";
+		return NULL;
+	}
+	else
+	{
+		if(pos==1)
+		{
+			ele = start->data;
+			TEMP = start;
+			start = start->link;
+		}
+		else
+		{
+			NODE *ptr, *prev;
+			int count = 1;
+			ptr = start; prev = NULL;
+			while(count<pos)
+			{
+				prev = ptr;
+				ptr = ptr->link;
+				count = count+1;
+			}
+			ele = ptr->data;
+			TEMP = ptr;
+			prev->link = ptr->link;
+		}
+		delete TEMP;
+		return ele;
+	}
+}
+/////////////////////////////////////////////////////////////////
+int LIST::IS_EMPTY()
+{
+	// def of function
+	if(start == NULL)
+		return 1;
+	else
+		return 0;
+}
+/////////////////////////////////////////////////////////////////
+void LIST::VIEW()
+{
+	// def of function
+	if(start == NULL)
+	{
+		cout<<endl<<"List is empty";
+		return;
+	}
+	NODE *ptr = start;
+	cout<<endl<<"List elements are : ";
+	while(ptr != NULL)
+	{
+		cout<<ptr-> data<<" ";
+		ptr=ptr->link;
+	}
+}
+/////////////////////////////////////////////////////////////////
+void MENU()
+{
+	int ele, opt, pos;
+	LIST obj;
+
+	do
+	{
+		cout<<endl<<"1 Add at First";
+		cout<<endl<<"2 Add at Last";
+		cout<<endl<<"3 Add at Position";
+		cout<<endl<<"4 Delete from First";
+		cout<<endl<<"5 Delete from Last";
+		cout<<endl<<"6 Delete from Position";
+		cout<<endl<<"7 List All";
+		cout<<endl<<"8 Exit Menu";
+		cout<<endl<<"================\n";
+		cout<<endl<<"Enter your choice : ";
+		cin>>opt;
+		switch(opt)
+		{
+			case 1:
+				cout<<endl<<"Enter element : ";
+				cin>>ele;
+				obj.ADD_FIRST(ele);
+				obj.VIEW();
+				break;
+			case 2:
+				cout<<endl<<"Enter element : ";
+				cin>>ele;
+				obj.ADD_LAST(ele);
+				obj.VIEW();
+				break;
+			case 3:
+				cout<<endl<<"Enter element : ";
+				cin>>ele;
+				cout<<endl<<"Enter position : ";
+				cin>>pos;
+				obj.ADD_POS(ele,pos);
+				obj.VIEW();
+				break;
+			case 4:
+				if(!obj.IS_EMPTY())
+				{
+					ele = obj.DEL_FIRST();
+					cout<<endl<<"Delted element = "<<ele;
+					obj.VIEW();
+				}
+				break;
+			case 5:
+				if(!obj.IS_EMPTY())
+				{
+					ele = obj.DEL_LAST();
+					cout<<endl<<"Delted element = "<<ele;
+					obj.VIEW();
+
+				}
+				break;
+			case 6:
+				if(!obj.IS_EMPTY())
+				{
+					cout<<endl<<"Enter position : ";
+					cin>>pos;
+					ele = obj.DEL_POS(pos);
+					cout<<endl<<"Delted element = "<<ele;
+					obj.VIEW();
+				}
+				break;
+			case 7:
+				obj.VIEW();
+				break;
+			case 8:
+				return;
+			default:
+				cout<<endl<<"invalid input";
+		}
+	}while(1);
+}
+/////////////////////////////////////////////////////////////////
+void main()
+{
+	clrscr();
+	MENU();
+	getch();
+}
+/////////////////////////////////////////////////////////////////
